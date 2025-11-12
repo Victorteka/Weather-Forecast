@@ -1,4 +1,4 @@
-package com.victorteka.weatherforecast.ui.theme
+package com.victorteka.weatherforecast.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build

@@ -1,4 +1,4 @@
-package com.victorteka.weatherforecast
+package com.victorteka.weatherforecast.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,8 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.victorteka.weatherforecast.ui.theme.WeatherForecastTheme
+import com.victorteka.weatherforecast.presentation.ui.theme.WeatherForecastTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
