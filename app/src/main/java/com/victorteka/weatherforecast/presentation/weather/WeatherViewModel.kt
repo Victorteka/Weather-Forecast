@@ -19,8 +19,6 @@ class WeatherViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(WeatherUiState())
     val uiState: StateFlow<WeatherUiState> = _uiState.asStateFlow()
-    var isLocationPermissionDenied = MutableStateFlow(false)
-        private set
 
     fun loadWeatherForCurrentLocation() {
         _uiState.update { state ->
