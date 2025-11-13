@@ -66,7 +66,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
+    implementation(libs.kotlinx.coroutines.play.services)
 
     //Hilt
     implementation(libs.hilt.android)
@@ -88,8 +88,8 @@ dependencies {
     // Accompanist
     implementation(libs.accompanist.permissions)
     //Icons
-    implementation("androidx.compose.material:material-icons-core")
-    implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.compose.material.icons.extended)
 
 
     testImplementation(libs.junit)
@@ -99,4 +99,13 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    // MockK for mocking
+    testImplementation(libs.mockk)
+    testImplementation(libs.mockk.android)
+    // Kotlin test
+    testImplementation(libs.kotlin.test)
+    // Coroutines test
+    testImplementation(libs.kotlinx.coroutines.test)
+    // Turbine for Flow testing
+    testImplementation(libs.turbine)
 }

@@ -9,7 +9,7 @@ on:
 
 jobs:
   test:
-    name: Run Unit Tests
+    name: Unit Tests & Lint
     runs-on: ubuntu-latest
 
     steps:
@@ -23,10 +23,14 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
+      - name: Create local.properties with API key
+        run: |
+          echo "WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}" >> local.properties
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Cache Gradle packages
+      - name: Cache Gradle dependencies
         uses: actions/cache@v4
         with:
           path: |
@@ -36,33 +40,39 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Run unit tests
-        run: ./gradlew test --stacktrace
+      - name: Run Unit Tests
+        run: ./gradlew testDebugUnitTest --stacktrace
 
-      - name: Run lint
-        run: ./gradlew lint
+      - name: Run Lint
+        run: ./gradlew lintDebug
         continue-on-error: true
 
-      - name: Upload test results
+      - name: Upload Unit Test Results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
-          path: '**/build/test-results/test*/*.xml'
-          retention-days: 30
+          name: unit-test-results
+          path: '**/build/test-results/**'
+          retention-days: 21
 
-      - name: Upload test reports
+      - name: Upload Unit Test Reports (HTML)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-reports
+          name: unit-test-reports
           path: '**/build/reports/tests/**'
-          retention-days: 30
+          retention-days: 21
 
-      - name: Upload lint reports
+      - name: Upload Lint Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: lint-reports
-          path: '**/build/reports/lint-results-*.html'
-          retention-days: 30
+          name: lint-report
+          path: '**/build/reports/lint-results-debug.html'
+          retention-days: 21
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Test & Lint Results" >> $GITHUB_STEP_SUMMARY
+          echo "See artifacts for details" >> $GITHUB_STEP_SUMMARY

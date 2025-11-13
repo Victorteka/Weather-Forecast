@@ -24,7 +24,6 @@ class WeatherRepositoryImpl @Inject constructor(
     private val context: Context
 ) : WeatherRepository {
 
-
     override fun getWeatherForecast(): Flow<Result<List<WeatherForecast>>> = flow {
         val location = locationManager.getCurrentLocation().getOrElse {
             // fallback: Tokyo
