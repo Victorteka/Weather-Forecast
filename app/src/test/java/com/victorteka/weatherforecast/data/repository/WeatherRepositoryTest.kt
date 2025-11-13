@@ -198,7 +198,7 @@ class WeatherRepositoryTest {
 
     @Test
     fun `getWeatherForecast should use Tokyo location when getCurrentLocation fails`() = runTest {
-        val tokyoLocation = Location(35.6762, 139.6503)
+        val tokyoLocation = Location(35.6764, 139.6500)
         val apiResponse = createMockWeatherResponse(3)
 
         coEvery { locationManager.getCurrentLocation() } returns Result.failure(Exception("Location error"))
