@@ -17,8 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.victorteka.weatherforecast.domain.model.WeatherForecast
-import com.victorteka.weatherforecast.presentation.ui.theme.DeepBlue
-import com.victorteka.weatherforecast.presentation.ui.theme.SkyBlue
 
 @Composable
 fun WeatherDetailRoute(
@@ -81,7 +79,7 @@ fun WeatherDetailScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = DeepBlue,
+                    containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = Color.White,
                     navigationIconContentColor = Color.White
                 )
@@ -94,7 +92,7 @@ fun WeatherDetailScreen(
                 .padding(paddingValues)
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(SkyBlue.copy(alpha = 0.3f), Color.White)
+                        colors = listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.3f), Color.White)
                     )
                 )
                 .verticalScroll(rememberScrollState())

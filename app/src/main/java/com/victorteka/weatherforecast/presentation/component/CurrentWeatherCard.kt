@@ -12,14 +12,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.victorteka.weatherforecast.domain.model.WeatherForecast
-import com.victorteka.weatherforecast.presentation.ui.theme.DeepBlue
 
 @Composable
 fun CurrentWeatherCard(forecast: WeatherForecast) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = DeepBlue
+            containerColor = MaterialTheme.colorScheme.primary
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {

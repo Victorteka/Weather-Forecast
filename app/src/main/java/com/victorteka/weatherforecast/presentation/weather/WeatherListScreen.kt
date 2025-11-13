@@ -2,7 +2,10 @@ package com.victorteka.weatherforecast.presentation.weather
 
 import android.Manifest
 import android.content.Context
-import android.util.Log
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +26,6 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -36,17 +38,12 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.shouldShowRationale
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.victorteka.weatherforecast.domain.model.WeatherForecast
 import com.victorteka.weatherforecast.presentation.component.CurrentWeatherCard
 import com.victorteka.weatherforecast.presentation.component.ErrorBanner
-import com.victorteka.weatherforecast.presentation.component.ErrorView
 import com.victorteka.weatherforecast.presentation.component.LoadingView
 import com.victorteka.weatherforecast.presentation.component.PermissionRationaleCard
 import com.victorteka.weatherforecast.presentation.component.WeatherForecastCard
-import com.victorteka.weatherforecast.presentation.ui.theme.DeepBlue
-import com.victorteka.weatherforecast.presentation.ui.theme.SkyBlue
 import com.victorteka.weatherforecast.util.formatDate
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -77,7 +74,6 @@ fun WeatherListScreen(
     onForecastClick: (WeatherForecast) -> Unit,
     loadWeatherForCurrentLocation: () -> Unit,
 ) {
-    val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
 
     val locationPermissionState = rememberMultiplePermissionsState(
         permissions = listOf(
@@ -99,11 +95,8 @@ fun WeatherListScreen(
     LaunchedEffect(locationPermissionState.allPermissionsGranted) {
         if (locationPermissionState.allPermissionsGranted) {
             loadWeatherForCurrentLocation()
-        } else if (locationPermissionState.permissions.any {
-                !it.status.isGranted && !it.status.shouldShowRationale
-            }) {
+        } else if (locationPermissionState.permissions.any { it.status.isGranted.not() && it.status.shouldShowRationale.not() }) {
             // Permission permanently denied, use default location
-            Log.d("TAG", "WeatherListScreen: ")
             loadWeatherForCurrentLocation()
         }
     }
@@ -113,7 +106,7 @@ fun WeatherListScreen(
             TopAppBar(
                 title = { Text("Weather Forecast") },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = DeepBlue,
+                    containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = Color.White
                 )
             )
@@ -125,40 +118,42 @@ fun WeatherListScreen(
                 .padding(paddingValues)
         ) {
             when {
-                uiState.isLoading -> {
-                    LoadingView()
-                }
+                locationPermissionState.allPermissionsGranted || locationPermissionState.permissions.any { it.status.isGranted.not() && it.status.shouldShowRationale.not() } -> {
+                    when {
+                        uiState.isLoading -> {
+                            LoadingView()
+                        }
 
-                uiState.forecasts.isNotEmpty() -> {
-                    PullToRefreshBox(
-                        isRefreshing = uiState.isRefreshing,
-                        onRefresh = { loadWeatherForCurrentLocation() },
-                        state = pullRefreshState,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        WeatherList(
-                            forecasts = uiState.forecasts,
-                            onForecastClick = onForecastClick
-                        )
+                        uiState.forecasts.isNotEmpty() -> {
+                            PullToRefreshBox(
+                                isRefreshing = uiState.isRefreshing,
+                                onRefresh = { loadWeatherForCurrentLocation() },
+                                state = pullRefreshState,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                WeatherList(
+                                    forecasts = uiState.forecasts,
+                                    onForecastClick = onForecastClick
+                                )
+                            }
+                        }
+
+                        uiState.errorMsg != null -> {
+                            Column(modifier = Modifier.fillMaxSize()) {
+                                ErrorBanner(message = uiState.errorMsg)
+                            }
+                        }
                     }
                 }
 
-                uiState.errorMsg != null -> {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        ErrorBanner(message = uiState.errorMsg)
-                    }
+                locationPermissionState.permissions.any { it.status.shouldShowRationale } -> {
+                    PermissionRationaleCard(
+                        onRequestPermission = {
+                            locationPermissionState.launchMultiplePermissionRequest()
+                        }
+                    )
                 }
             }
-
-            if (
-                !locationPermissionState.allPermissionsGranted &&
-                locationPermissionState.permissions.any { it.status.shouldShowRationale }
-            ) {
-                PermissionRationaleCard(
-                    onRequestPermission = { locationPermissionState.launchMultiplePermissionRequest() }
-                )
-            }
-
         }
     }
 }
@@ -173,7 +168,7 @@ fun WeatherList(
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(SkyBlue.copy(alpha = 0.3f), Color.White)
+                    colors = listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.3f), Color.White)
                 )
             ),
         contentPadding = PaddingValues(16.dp),
@@ -207,5 +202,23 @@ fun WeatherList(
                 )
             }
         }
+    }
+}
+
+fun openAppSettings(context: Context) {
+    try {
+        val intent = Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", context.packageName, null)
+        )
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        Toast.makeText(
+            context,
+            "Unable to open app settings",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }

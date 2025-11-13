@@ -70,6 +70,7 @@ dependencies {
 
     //Hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.compose.ui.text.google.fonts)
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     //Serialization

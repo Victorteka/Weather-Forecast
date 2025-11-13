@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.victorteka.weatherforecast.domain.model.WeatherForecast
-import com.victorteka.weatherforecast.presentation.ui.theme.DeepBlue
 import com.victorteka.weatherforecast.util.formatDateTime
 import com.victorteka.weatherforecast.util.getWeatherIcon
 import java.util.Locale
@@ -28,7 +27,7 @@ fun MainWeatherInfo(forecast: WeatherForecast) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = DeepBlue
+            containerColor = MaterialTheme.colorScheme.primary
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {

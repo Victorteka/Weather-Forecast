@@ -1,6 +1,7 @@
 package com.victorteka.weatherforecast.presentation.component
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -18,8 +19,10 @@ fun LoadingView() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator()
-        Spacer(Modifier.height(4.dp))
-        Text("Loading...", fontWeight = FontWeight.Bold)
+        Column {
+            CircularProgressIndicator()
+            Spacer(Modifier.height(4.dp))
+            Text("Loading...", fontWeight = FontWeight.Bold)
+        }
     }
 }
