@@ -27,7 +27,7 @@ class WeatherRepositoryImpl @Inject constructor(
     override fun getWeatherForecast(): Flow<Result<List<WeatherForecast>>> = flow {
         val location = locationManager.getCurrentLocation().getOrElse {
             // fallback: Tokyo
-            Location(35.6762, 139.6503)
+            Location(35.6764, 139.6500)
         }
 
         val localData = weatherDao.getWeatherForecast(
