@@ -1,9 +1,11 @@
 package com.victorteka.weatherforecast.di
 
+import android.content.Context
 import com.victorteka.weatherforecast.data.local.dao.WeatherDao
 import com.victorteka.weatherforecast.data.remote.WeatherApiService
 import com.victorteka.weatherforecast.data.repository.WeatherRepositoryImpl
 import com.victorteka.weatherforecast.domain.repository.WeatherRepository
+import com.victorteka.weatherforecast.util.LocationManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,8 +21,9 @@ object RepositoryModule {
     fun provideWeatherRepository(
         apiService: WeatherApiService,
         weatherDao: WeatherDao,
-        apiKey: String
+        context: Context,
+        locationManager: LocationManager
     ): WeatherRepository {
-        return WeatherRepositoryImpl(apiService, weatherDao, apiKey)
+        return WeatherRepositoryImpl(apiService, weatherDao, locationManager, context)
     }
 }

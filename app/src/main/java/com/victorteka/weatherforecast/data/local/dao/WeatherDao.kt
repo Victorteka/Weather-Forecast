@@ -21,4 +21,7 @@ interface WeatherDao {
 
     @Query("DELETE FROM weather_forecast WHERE fetchedAt < :timestamp")
     suspend fun deleteOldForecasts(timestamp: Long)
+
+    @Query("SELECT * FROM weather_forecast WHERE id = :id LIMIT 1")
+    fun getForecastById(id: String): Flow<WeatherEntity?>
 }
