@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -17,6 +20,16 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+
+        val localProperties = Properties().apply {
+            val localPropertiesFile = rootProject.file("local.properties")
+            if (localPropertiesFile.exists()) {
+                load(FileInputStream(localPropertiesFile))
+            }
+        }
+        val weatherApiKey: String = localProperties.getProperty("WEATHER_API_KEY")
+            ?: throw GradleException("WEATHER_API_KEY not found in local.properties")
+        buildConfigField("String", "WEATHER_API_KEY", "\"$weatherApiKey\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -39,6 +52,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -52,6 +66,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
+
     //Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
@@ -70,7 +86,9 @@ dependencies {
     implementation(libs.play.services.location)
     // Accompanist
     implementation(libs.accompanist.permissions)
-
+    //Icons
+    implementation("androidx.compose.material:material-icons-core")
+    implementation("androidx.compose.material:material-icons-extended")
 
 
     testImplementation(libs.junit)
