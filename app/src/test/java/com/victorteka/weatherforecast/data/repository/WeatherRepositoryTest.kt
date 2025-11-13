@@ -215,7 +215,7 @@ class WeatherRepositoryTest {
             awaitComplete()
         }
 
-        coVerify { apiService.getWeatherForecast(35.6762, 139.6503) }
+        coVerify { apiService.getWeatherForecast(35.6764, 139.6500) }
     }
 
     @Test
